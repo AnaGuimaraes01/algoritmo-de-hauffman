@@ -8,7 +8,6 @@ int main() {
     CodigoHuffman tabela[TAM_MAX];
     char codigo[50] = {0};
     int indice = 0;
-    char codigoCompleto[5000];
 
     // ETAPA 1: GERAR TABELA
     printf("Digite o texto para gerar a tabela de Huffman: ");
@@ -25,12 +24,11 @@ int main() {
 
     exibirTabelaHuffman(tabela, indice);
 
-    // ETAPA 2: GERAR CÓDIGO COMPLETO DO TEXTO
-    gerarCodigoCompleto(texto, tabela, indice, codigoCompleto);
-    printf("\nCodigo completo do texto: %s\n", codigoCompleto);
+    // EXIBIR CÓDIGO COMPLETO DO TEXTO
+    exibirCodigoCompleto(texto, tabela, indice);
 
-    // ETAPA 3: DESCOMPRIMIR
-    descomprimirTexto(codigoCompleto, raiz);
+    // ETAPA 2: DESCOMPRIMIR COM CÓDIGO DIGITADO
+    descomprimirTextoManual(raiz);
 
     liberarArvore(raiz);
     return 0;

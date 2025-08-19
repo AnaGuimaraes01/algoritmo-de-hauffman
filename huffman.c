@@ -69,32 +69,36 @@ void gerarCodigos(No *raiz, char *codigo, int nivel, CodigoHuffman tabela[], int
     if (raiz->direita) { codigo[nivel] = '1'; gerarCodigos(raiz->direita, codigo, nivel + 1, tabela, indice); }
 }
 
-// exibe tabela Huffman (uma vez por caractere)
 void exibirTabelaHuffman(CodigoHuffman tabela[], int tamanho) {
     printf("\nTabela de Codigos Huffman:\n");
     for (int i = 0; i < tamanho; i++)
         printf("%c: %s\n", tabela[i].caractere, tabela[i].codigo);
 }
 
-// gera o código completo do texto original automaticamente
-void gerarCodigoCompleto(const char *texto, CodigoHuffman tabela[], int tamanho, char *codigoCompleto) {
-    codigoCompleto[0] = '\0';
+void exibirCodigoCompleto(const char *texto, CodigoHuffman tabela[], int tamanho) {
+    printf("\nCodigo completo do texto: ");
     for (int i = 0; texto[i] != '\0'; i++) {
         for (int j = 0; j < tamanho; j++) {
             if (tabela[j].caractere == texto[i]) {
-                strcat(codigoCompleto, tabela[j].codigo);
+                printf("%s", tabela[j].codigo);
                 break;
             }
         }
     }
+    printf("\n");
 }
 
-void descomprimirTexto(const char *textoBits, No *raiz) {
+void descomprimirTextoManual(No *raiz) {
+    char codigoBits[5000];
+    printf("\nDigite o codigo de Huffman para descomprimir: ");
+    fgets(codigoBits, sizeof(codigoBits), stdin);
+    codigoBits[strcspn(codigoBits, "\n")] = '\0';
+
     No *atual = raiz;
     printf("\nTexto descomprimido:\n");
-    for (int i = 0; textoBits[i] != '\0'; i++) {
-        if (textoBits[i] == '0') atual = atual->esquerda;
-        else if (textoBits[i] == '1') atual = atual->direita;
+    for (int i = 0; codigoBits[i] != '\0'; i++) {
+        if (codigoBits[i] == '0') atual = atual->esquerda;
+        else if (codigoBits[i] == '1') atual = atual->direita;
         if (!atual->esquerda && !atual->direita) {
             printf("%c", atual->caractere);
             atual = raiz;
