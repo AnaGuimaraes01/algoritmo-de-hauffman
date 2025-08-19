@@ -17,10 +17,10 @@ typedef struct {
 void contarFrequencias(const char *texto, int frequencias[]);
 No* construirArvore(int frequencias[]);
 void gerarCodigos(No *raiz, char *codigo, int nivel, CodigoHuffman tabela[], int *indice);
-void exibirCodigosOrdenados(CodigoHuffman tabela[], int tamanho);
-void exibirFrequencias(int frequencias[]);
-void comprimirTexto(const char *texto, CodigoHuffman tabela[], int tamanho);
+void exibirTabelaHuffman(CodigoHuffman tabela[], int tamanho);
+void gerarCodigoCompleto(const char *texto, CodigoHuffman tabela[], int tamanho, char *codigoCompleto);
 void descomprimirTexto(const char *textoBits, No *raiz);
 void liberarArvore(No *raiz);
+void exibirFrequencias(int frequencias[]);
 
 #endif

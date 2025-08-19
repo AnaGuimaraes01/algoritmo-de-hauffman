@@ -16,9 +16,7 @@ No* criarNo(char caractere, int frequencia) {
     return novo;
 }
 
-void inicializarFila(FilaPrioridade *fila) {
-    fila->tamanho = 0;
-}
+void inicializarFila(FilaPrioridade *fila) { fila->tamanho = 0; }
 
 void inserirFila(FilaPrioridade *fila, No *no) {
     fila->nos[fila->tamanho++] = no;
@@ -29,55 +27,37 @@ void inserirFila(FilaPrioridade *fila, No *no) {
             No* temp = fila->nos[i];
             fila->nos[i] = fila->nos[i - 1];
             fila->nos[i - 1] = temp;
-        } else {
-            break;
-        }
+        } else break;
     }
 }
 
-No* removerMenor(FilaPrioridade *fila) {
-    return fila->nos[--fila->tamanho];
-}
+No* removerMenor(FilaPrioridade *fila) { return fila->nos[--fila->tamanho]; }
 
 void contarFrequencias(const char *texto, int frequencias[]) {
     for (int i = 0; i < TAM_MAX; i++) frequencias[i] = 0;
-    for (int i = 0; texto[i] != '\0'; i++) {
-        frequencias[(unsigned char)texto[i]]++;
-    }
+    for (int i = 0; texto[i] != '\0'; i++) frequencias[(unsigned char)texto[i]]++;
 }
 
 No* construirArvore(int frequencias[]) {
     FilaPrioridade fila;
     inicializarFila(&fila);
-
-    for (int i = 0; i < TAM_MAX; i++) {
-        if (frequencias[i] > 0) {
+    for (int i = 0; i < TAM_MAX; i++)
+        if (frequencias[i] > 0)
             inserirFila(&fila, criarNo((char)i, frequencias[i]));
-        }
-    }
-
     while (fila.tamanho > 1) {
         No *esq = removerMenor(&fila);
         No *dir = removerMenor(&fila);
-
-        if (esq->frequencia > dir->frequencia) {
-            No* temp = esq;
-            esq = dir;
-            dir = temp;
-        }
-
+        if (esq->frequencia > dir->frequencia) { No* temp = esq; esq = dir; dir = temp; }
         No *novo = criarNo('\0', esq->frequencia + dir->frequencia);
         novo->esquerda = esq;
         novo->direita = dir;
         inserirFila(&fila, novo);
     }
-
     return removerMenor(&fila);
 }
 
 void gerarCodigos(No *raiz, char *codigo, int nivel, CodigoHuffman tabela[], int *indice) {
     if (!raiz) return;
-
     if (!raiz->esquerda && !raiz->direita) {
         codigo[nivel] = '\0';
         tabela[*indice].caractere = raiz->caractere;
@@ -85,62 +65,36 @@ void gerarCodigos(No *raiz, char *codigo, int nivel, CodigoHuffman tabela[], int
         (*indice)++;
         return;
     }
-
-    if (raiz->esquerda) {
-        codigo[nivel] = '0';
-        gerarCodigos(raiz->esquerda, codigo, nivel + 1, tabela, indice);
-    }
-    if (raiz->direita) {
-        codigo[nivel] = '1';
-        gerarCodigos(raiz->direita, codigo, nivel + 1, tabela, indice);
-    }
+    if (raiz->esquerda) { codigo[nivel] = '0'; gerarCodigos(raiz->esquerda, codigo, nivel + 1, tabela, indice); }
+    if (raiz->direita) { codigo[nivel] = '1'; gerarCodigos(raiz->direita, codigo, nivel + 1, tabela, indice); }
 }
 
-int compararAlfabetico(const void *a, const void *b) {
-    return ((CodigoHuffman*)a)->caractere - ((CodigoHuffman*)b)->caractere;
-}
-
-void exibirCodigosOrdenados(CodigoHuffman tabela[], int tamanho) {
-    qsort(tabela, tamanho, sizeof(CodigoHuffman), compararAlfabetico);
-    printf("\nTabela de Codigos Huffman (ordem alfabetica):\n");
-    for (int i = 0; i < tamanho; i++) {
+// exibe tabela Huffman (uma vez por caractere)
+void exibirTabelaHuffman(CodigoHuffman tabela[], int tamanho) {
+    printf("\nTabela de Codigos Huffman:\n");
+    for (int i = 0; i < tamanho; i++)
         printf("%c: %s\n", tabela[i].caractere, tabela[i].codigo);
-    }
 }
 
-void exibirFrequencias(int frequencias[]) {
-    printf("\nFrequencia de cada caractere:\n");
-    for (int i = 0; i < TAM_MAX; i++) {
-        if (frequencias[i] > 0) {
-            printf("%c: %d\n", i, frequencias[i]);
-        }
-    }
-}
-
-void comprimirTexto(const char *texto, CodigoHuffman tabela[], int tamanho) {
-    int bits = 0;
-    printf("\nTexto comprimido em bits:\n");
+// gera o código completo do texto original automaticamente
+void gerarCodigoCompleto(const char *texto, CodigoHuffman tabela[], int tamanho, char *codigoCompleto) {
+    codigoCompleto[0] = '\0';
     for (int i = 0; texto[i] != '\0'; i++) {
         for (int j = 0; j < tamanho; j++) {
             if (tabela[j].caractere == texto[i]) {
-                printf("%s", tabela[j].codigo);
-                bits += strlen(tabela[j].codigo);
+                strcat(codigoCompleto, tabela[j].codigo);
                 break;
             }
         }
     }
-    printf("\n\nTamanho original: %d bits", (int)strlen(texto) * 8);
-    printf("\nTamanho comprimido: %d bits\n", bits);
 }
 
-// ================= NOVA FUNÇÃO =================
 void descomprimirTexto(const char *textoBits, No *raiz) {
     No *atual = raiz;
     printf("\nTexto descomprimido:\n");
     for (int i = 0; textoBits[i] != '\0'; i++) {
         if (textoBits[i] == '0') atual = atual->esquerda;
         else if (textoBits[i] == '1') atual = atual->direita;
-
         if (!atual->esquerda && !atual->direita) {
             printf("%c", atual->caractere);
             atual = raiz;
@@ -148,7 +102,13 @@ void descomprimirTexto(const char *textoBits, No *raiz) {
     }
     printf("\n");
 }
-// ================================================
+
+void exibirFrequencias(int frequencias[]) {
+    printf("\nFrequencia de cada caractere:\n");
+    for (int i = 0; i < TAM_MAX; i++)
+        if (frequencias[i] > 0)
+            printf("%c: %d\n", i, frequencias[i]);
+}
 
 void liberarArvore(No *raiz) {
     if (!raiz) return;

@@ -8,8 +8,10 @@ int main() {
     CodigoHuffman tabela[TAM_MAX];
     char codigo[50] = {0};
     int indice = 0;
+    char codigoCompleto[5000];
 
-    printf("Digite o texto para comprimir: ");
+    // ETAPA 1: GERAR TABELA
+    printf("Digite o texto para gerar a tabela de Huffman: ");
     fgets(texto, sizeof(texto), stdin);
     texto[strcspn(texto, "\n")] = '\0';
 
@@ -21,23 +23,15 @@ int main() {
     No *raiz = construirArvore(frequencias);
     gerarCodigos(raiz, codigo, 0, tabela, &indice);
 
-    exibirCodigosOrdenados(tabela, indice);
-    comprimirTexto(texto, tabela, indice);
+    exibirTabelaHuffman(tabela, indice);
 
-    // Criar o texto comprimido em string para teste da descompressão
-    char textoBits[5000] = {0};
-    for (int i = 0; texto[i] != '\0'; i++) {
-        for (int j = 0; j < indice; j++) {
-            if (tabela[j].caractere == texto[i]) {
-                strcat(textoBits, tabela[j].codigo);
-                break;
-            }
-        }
-    }
+    // ETAPA 2: GERAR CÓDIGO COMPLETO DO TEXTO
+    gerarCodigoCompleto(texto, tabela, indice, codigoCompleto);
+    printf("\nCodigo completo do texto: %s\n", codigoCompleto);
 
-    descomprimirTexto(textoBits, raiz);
+    // ETAPA 3: DESCOMPRIMIR
+    descomprimirTexto(codigoCompleto, raiz);
 
     liberarArvore(raiz);
-
     return 0;
 }
