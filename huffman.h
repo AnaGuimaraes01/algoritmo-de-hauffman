@@ -20,6 +20,7 @@ void gerarCodigos(No *raiz, char *codigo, int nivel, CodigoHuffman tabela[], int
 void exibirCodigosOrdenados(CodigoHuffman tabela[], int tamanho);
 void exibirFrequencias(int frequencias[]);
 void comprimirTexto(const char *texto, CodigoHuffman tabela[], int tamanho);
+void descomprimirTexto(const char *textoBits, No *raiz);
 void liberarArvore(No *raiz);
 
 #endif

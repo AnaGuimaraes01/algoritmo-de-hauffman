@@ -60,7 +60,6 @@ No* construirArvore(int frequencias[]) {
         No *esq = removerMenor(&fila);
         No *dir = removerMenor(&fila);
 
-        // Garante que o nó de menor frequência fique à esquerda
         if (esq->frequencia > dir->frequencia) {
             No* temp = esq;
             esq = dir;
@@ -79,7 +78,7 @@ No* construirArvore(int frequencias[]) {
 void gerarCodigos(No *raiz, char *codigo, int nivel, CodigoHuffman tabela[], int *indice) {
     if (!raiz) return;
 
-    if (!raiz->esquerda && !raiz->direita) { // Nó folha
+    if (!raiz->esquerda && !raiz->direita) {
         codigo[nivel] = '\0';
         tabela[*indice].caractere = raiz->caractere;
         strcpy(tabela[*indice].codigo, codigo);
@@ -133,6 +132,23 @@ void comprimirTexto(const char *texto, CodigoHuffman tabela[], int tamanho) {
     printf("\n\nTamanho original: %d bits", (int)strlen(texto) * 8);
     printf("\nTamanho comprimido: %d bits\n", bits);
 }
+
+// ================= NOVA FUNÇÃO =================
+void descomprimirTexto(const char *textoBits, No *raiz) {
+    No *atual = raiz;
+    printf("\nTexto descomprimido:\n");
+    for (int i = 0; textoBits[i] != '\0'; i++) {
+        if (textoBits[i] == '0') atual = atual->esquerda;
+        else if (textoBits[i] == '1') atual = atual->direita;
+
+        if (!atual->esquerda && !atual->direita) {
+            printf("%c", atual->caractere);
+            atual = raiz;
+        }
+    }
+    printf("\n");
+}
+// ================================================
 
 void liberarArvore(No *raiz) {
     if (!raiz) return;

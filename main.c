@@ -24,6 +24,19 @@ int main() {
     exibirCodigosOrdenados(tabela, indice);
     comprimirTexto(texto, tabela, indice);
 
+    // Criar o texto comprimido em string para teste da descompressão
+    char textoBits[5000] = {0};
+    for (int i = 0; texto[i] != '\0'; i++) {
+        for (int j = 0; j < indice; j++) {
+            if (tabela[j].caractere == texto[i]) {
+                strcat(textoBits, tabela[j].codigo);
+                break;
+            }
+        }
+    }
+
+    descomprimirTexto(textoBits, raiz);
+
     liberarArvore(raiz);
 
     return 0;
